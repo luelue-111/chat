@@ -58,7 +58,7 @@ async function sendMessage() {
     input.value = '';
 
     // ⚠️ 不建议写在前端（后面我会教你改后端）
-    const apiKey = '你的API_KEY';
+    const apiKey = 'sk-V9IwuhDXqDhR3hXtSrFYq1g8nO53QeLqLqXrWJ1rP2ufF7MT';
 
 
     // ====== 图片转 base64 ======
