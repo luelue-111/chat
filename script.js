@@ -9,7 +9,6 @@ document.getElementById('chat-input').addEventListener('paste', function (e) {
     for (let item of items) {
         if (item.type.startsWith('image')) {
             pastedImage = item.getAsFile();
-
             displayMessage('bot', '📷 图片已粘贴，点击发送即可');
         }
     }
@@ -56,11 +55,10 @@ async function sendMessage() {
     if (!text && !pastedImage) return;
 
     displayMessage('user', text || '📷 图片');
-
     input.value = '';
 
-    // 👇👇👇 在这里粘贴你的 API KEY 👇👇👇
-    const apiKey = 'sk-HrA7kqEtJ5SmF8KAguxyHS2XsxD0KYLte8azHkRV0cfEnCgw';
+    // ⚠️ 不建议写在前端（后面我会教你改后端）
+    const apiKey = '你的API_KEY';
 
 
     // ====== 图片转 base64 ======
@@ -70,23 +68,27 @@ async function sendMessage() {
         const reader = new FileReader();
 
         imageBase64 = await new Promise(resolve => {
-            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onload = () => resolve(reader.result);
             reader.readAsDataURL(pastedImage);
         });
     }
 
 
-    // ====== 构造 GPT 请求 ======
+    // ====== 构造请求 ======
     const payload = {
         model: "gpt-5.3-codex",
-        messages: [
+        input: [
             {
                 role: "user",
                 content: [
-                    { type: "text", text: text || "请分析这张图片" },
+                    ...(text ? [{
+                        type: "input_text",
+                        text: text
+                    }] : []),
+
                     ...(imageBase64 ? [{
-                        type: "image",
-                        data: imageBase64
+                        type: "input_image",
+                        image_url: imageBase64
                     }] : [])
                 ]
             }
@@ -95,7 +97,7 @@ async function sendMessage() {
 
 
     try {
-        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        const res = await fetch("https://anyrouter.top/v1/responses", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${apiKey}`,
@@ -106,7 +108,11 @@ async function sendMessage() {
 
         const data = await res.json();
 
-        const reply = data.choices?.[0]?.message?.content || "出错了";
+        // ✅ 正确解析返回
+        const reply =
+            data.output?.[0]?.content?.[0]?.text ||
+            data.output_text ||
+            "出错了";
 
         displayMessage('bot', reply);
 
