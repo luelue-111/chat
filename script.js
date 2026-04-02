@@ -60,7 +60,7 @@ async function sendMessage() {
     input.value = '';
 
     // 👇👇👇 在这里粘贴你的 API KEY 👇👇👇
-    const apiKey = 'sk-V9IwuhDXqDhR3hXtSrFYq1g8nO53QeLqLqXrWJ1rP2ufF7MT';
+    const apiKey = 'sk-HrA7kqEtJ5SmF8KAguxyHS2XsxD0KYLte8azHkRV0cfEnCgw';
 
 
     // ====== 图片转 base64 ======
